@@ -21,7 +21,7 @@ export class MongoInterface {
         this.options.readPreference = 'primaryPreferred';
         this.options.replicaSet = 'replica-set';
 
-        this.url = `mongodb://rs1:${port},rs2:${port},rs3:${port}`;
+        this.url = `mongodb://${process.env.DB_IP}:${process.env.DB_PORT}`;
         this._client = undefined;
     }
 

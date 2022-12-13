@@ -595,7 +595,7 @@ def process_base_chains():
 
 def update_mongo_db(configs_to_add):
     client = pymongo.MongoClient(
-        host=['rs1:27017', 'rs2:27017', 'rs3:27017'],
+        host=[env.DB_IP + ":" + env.DB_PORT],
         replicaSet='replica-set',
         readPreference='primaryPreferred')
 
