@@ -15,6 +15,7 @@ initialising the class
 UNIQUE_ALERTER_IDENTIFIER = os.environ['UNIQUE_ALERTER_IDENTIFIER']
 
 # Mongo configuration
+DB_IP = os.environ['DB_IP']
 DB_NAME = os.environ['DB_NAME']
 DB_PORT = int(os.environ['DB_PORT'])
 
