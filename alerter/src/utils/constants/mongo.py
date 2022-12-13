@@ -6,5 +6,5 @@ BASE_CHAIN_COLL = 'base_chains'
 GENERICS_COLL = 'generics'
 
 
-REPLICA_SET_HOSTS = [env.DB_IP + ":" + env.DB_POST]
+REPLICA_SET_HOSTS = [env.DB_IP + ":" + env.DB_PORT]
 REPLICA_SET_NAME = 'replica-set'
