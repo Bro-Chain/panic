@@ -1,3 +1,5 @@
+from src.utils import env
+
 CONFIGS_COLL = 'configs'
 CONFIGS_OLD_COLL = 'configs_old'
 BASE_CHAIN_COLL = 'base_chains'
