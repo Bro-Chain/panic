@@ -1,5 +1,5 @@
 import MongoClient from "mongodb";
-import {MongoClientNotInitialised} from "../constant/errors";
+import { MongoClientNotInitialised } from "../constant/errors";
 import {
     MSG_MONGO_CONNECTION_ESTABLISHED,
     MSG_MONGO_COULD_NOT_DISCONNECT,
@@ -15,8 +15,8 @@ export class MongoInterface {
     private _client?: MongoClient.MongoClient;
 
     constructor(options: MongoClient.MongoClientOptions,
-        connectionString: string) {
-            
+        connectionString: string = "mongodb://localhost:27017") {
+
         this.options = options;
         this.options.readPreference = 'primaryPreferred';
         this.options.replicaSet = 'replica-set';
