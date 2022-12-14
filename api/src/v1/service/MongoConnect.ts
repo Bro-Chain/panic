@@ -33,7 +33,7 @@ export class MongoConnect {
 
     private static getConnection(): Promise<mongosee.Connection> {
 
-        const host = parseInt(process.env.DB_IP || "rs1");
+        const host = process.env.DB_IP || "rs1";
         const port = parseInt(process.env.DB_PORT || "27017");
         const db = process.env.DB_NAME || "panicdb";
         const connection = mongosee.connection;
