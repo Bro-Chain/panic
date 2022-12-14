@@ -15,13 +15,13 @@ export class MongoInterface {
     private _client?: MongoClient.MongoClient;
 
     constructor(options: MongoClient.MongoClientOptions,
-        host: string = "localhost", port: number = 27017) {
+        connectionString: string) {
             
         this.options = options;
         this.options.readPreference = 'primaryPreferred';
         this.options.replicaSet = 'replica-set';
 
-        this.url = `mongodb://${process.env.DB_IP}:${process.env.DB_PORT}`;
+        this.url = connectionString;
         this._client = undefined;
     }
 

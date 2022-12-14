@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import {readFile} from "./server/files";
+import { readFile } from "./server/files";
 import path from "path";
 import https from "https";
 import {
@@ -71,29 +71,29 @@ import {
     getSystemKeys,
     RedisInterface
 } from "./server/redis"
-import {MongoInterface, MonitorablesCollection} from "./server/mongo";
-import {MongoClientOptions} from "mongodb";
-import {GenericRoute} from "./v1/route/GenericRoute";
-import {baseChains, PingStatus, Severities, Status, testAlertMessage, Timeout} from "./constant/server";
-import {TimeoutError} from "./constant/server.feedback";
-import {MongoConnect} from "./v1/service/MongoConnect";
-import {event} from '@pagerduty/pdjs';
-import {ConfigRoute} from "./v1/route/ConfigRoute";
-import {InstallationRoute} from "./v1/route/InstallationRoute";
-import {BaseChainRoute} from "./v1/route/BaseChainRoute";
-import {ChannelRoute} from "./v1/route/ChannelRoute";
-import {GenericModel} from "./v1/entity/model/GenericModel";
-import {SeverityAlertSubconfigModel} from "./v1/entity/model/SeverityAlertSubconfigSchema";
-import {BaseChainModel} from "./v1/entity/model/BaseChainModel";
-import {Model} from "mongoose";
-import {MongooseUtil} from "./util/MongooseUtil";
-import {ThresholdAlertSubconfigModel} from "./v1/entity/model/ThresholdAlertSubconfigSchema";
-import {TimeWindowAlertSubconfigModel} from "./v1/entity/model/TimeWindowAlertSubconfigSchema";
+import { MongoInterface, MonitorablesCollection } from "./server/mongo";
+import { MongoClientOptions } from "mongodb";
+import { GenericRoute } from "./v1/route/GenericRoute";
+import { baseChains, PingStatus, Severities, Status, testAlertMessage, Timeout } from "./constant/server";
+import { TimeoutError } from "./constant/server.feedback";
+import { MongoConnect } from "./v1/service/MongoConnect";
+import { event } from '@pagerduty/pdjs';
+import { ConfigRoute } from "./v1/route/ConfigRoute";
+import { InstallationRoute } from "./v1/route/InstallationRoute";
+import { BaseChainRoute } from "./v1/route/BaseChainRoute";
+import { ChannelRoute } from "./v1/route/ChannelRoute";
+import { GenericModel } from "./v1/entity/model/GenericModel";
+import { SeverityAlertSubconfigModel } from "./v1/entity/model/SeverityAlertSubconfigSchema";
+import { BaseChainModel } from "./v1/entity/model/BaseChainModel";
+import { Model } from "mongoose";
+import { MongooseUtil } from "./util/MongooseUtil";
+import { ThresholdAlertSubconfigModel } from "./v1/entity/model/ThresholdAlertSubconfigSchema";
+import { TimeWindowAlertSubconfigModel } from "./v1/entity/model/TimeWindowAlertSubconfigSchema";
 
 const axios = require('axios');
 const opsgenie = require('opsgenie-sdk');
 const twilio = require('twilio');
-const {WebClient} = require('@slack/web-api');
+const { WebClient } = require('@slack/web-api');
 const Web3 = require('web3');
 const nodemailer = require('nodemailer');
 const swaggerUi = require('swagger-ui-express');
@@ -119,7 +119,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../', 'build')));
 app.use(cookieParser());
 app.use((err: any, req: express.Request, res: express.Response,
-         next: express.NextFunction) => {
+    next: express.NextFunction) => {
     // This check makes sure this is a JSON parsing issue, but it might be
     // coming from any middleware, not just body-parser.
     if (err instanceof SyntaxError && 'body' in err) {
@@ -132,7 +132,7 @@ app.use((err: any, req: express.Request, res: express.Response,
 
 //timeout
 app.use((req: express.Request, res: express.Response,
-         next: express.NextFunction): void => {
+    next: express.NextFunction): void => {
 
     let timeout = Timeout.MAX;
     if (req.query && req.query.timeout) {
@@ -169,12 +169,12 @@ if (is_dev_mode) {
     console.log('NOTE - Accepting connections from UI Dev Server.')
     allowedOrigins.push(
         `http://localhost:${UI_PORT}`);
-        allowedOrigins.push(
-            `https://localhost:${UI_PORT}`);
-        
+    allowedOrigins.push(
+        `https://localhost:${UI_PORT}`);
+
 }
 
-app.use(cors({origin: allowedOrigins}));
+app.use(cors({ origin: allowedOrigins }));
 
 // Connect with Redis
 const redisHost = process.env.REDIS_IP || "localhost";
@@ -191,8 +191,7 @@ const redisInterval = setInterval(() => {
 }, 3000);
 
 // Connect with Mongo
-const mongoHost = process.env.DB_IP || "localhost";
-const mongoPort = parseInt(process.env.DB_PORT || "27017");
+const mongoConnectionString = process.env.DB_CONNECTION_STRING || "mongodb://localhost:27017";
 const mongoDB = process.env.DB_NAME || "panicdb";
 const mongoOptions: MongoClientOptions = {
     useNewUrlParser: true,
@@ -201,7 +200,7 @@ const mongoOptions: MongoClientOptions = {
     connectTimeoutMS: 10000,
     serverSelectionTimeoutMS: 5000,
 };
-const mongoInterface = new MongoInterface(mongoOptions, mongoHost, mongoPort);
+const mongoInterface = new MongoInterface(mongoOptions, mongoConnectionString);
 
 // Check the mongo connection every 3 seconds. If the connection was dropped,
 // re-connect.
@@ -279,7 +278,7 @@ app.post('/server/mongo/monitorablesInfo',
                 const db = mongoInterface.client.db(mongoDB);
                 if (baseChainsInput.length > 0) {
                     const collection = db.collection(MonitorablesCollection);
-                    const query = {_id: {$in: baseChainsInput}};
+                    const query = { _id: { $in: baseChainsInput } };
                     const docs = await collection.find(query).toArray();
                     for (const doc of docs) {
                         const baseChainData: any = result.result[doc._id];
@@ -352,7 +351,7 @@ app.post('/server/mongo/alerts',
 
         // --------------------- Input Validation -------------------
 
-        const arrayBasedStringParams = {chains, severities, sources};
+        const arrayBasedStringParams = { chains, severities, sources };
         for (const [param, value] of Object.entries(arrayBasedStringParams)) {
             if (!Array.isArray(value) ||
                 !allElementsInListHaveTypeString(value)) {
@@ -372,7 +371,7 @@ app.post('/server/mongo/alerts',
             }
         }
 
-        const positiveFloats = {minTimestamp, maxTimestamp};
+        const positiveFloats = { minTimestamp, maxTimestamp };
         for (const [param, value] of Object.entries(positiveFloats)) {
             const parsedFloat = parseFloat(value);
             if (isNaN(parsedFloat) || parsedFloat < 0) {
@@ -393,32 +392,32 @@ app.post('/server/mongo/alerts',
             return;
         }
 
-        let result = resultJson({alerts: []});
+        let result = resultJson({ alerts: [] });
         try {
             if (mongoInterface.client) {
                 const db = mongoInterface.client.db(mongoDB);
                 if (chains.length > 0) {
                     let queryList: any = [];
                     for (let i = 1; i < chains.length; i++) {
-                        queryList.push({$unionWith: chains[i]})
+                        queryList.push({ $unionWith: chains[i] })
                     }
                     queryList.push(
-                        {$match: {doc_type: "alert"}},
-                        {$unwind: "$alerts"},
+                        { $match: { doc_type: "alert" } },
+                        { $unwind: "$alerts" },
                         {
                             $match: {
-                                "alerts.severity": {$in: severities},
-                                "alerts.origin": {$in: sources},
+                                "alerts.severity": { $in: severities },
+                                "alerts.origin": { $in: sources },
                                 "alerts.timestamp": {
                                     "$gte": parsedMinTimestamp,
                                     "$lte": parsedMaxTimestamp
                                 }
                             }
                         },
-                        {$sort: {"alerts.timestamp": -1, _id: 1}},
-                        {$limit: parsedNoOfAlerts},
-                        {$group: {_id: null, alerts: {$push: "$alerts"}}},
-                        {$project: {_id: 0, alerts: "$alerts"}},
+                        { $sort: { "alerts.timestamp": -1, _id: 1 } },
+                        { $limit: parsedNoOfAlerts },
+                        { $group: { _id: null, alerts: { $push: "$alerts" } } },
+                        { $project: { _id: 0, alerts: "$alerts" } },
                     );
                     const collection = db.collection(chains[0]);
                     const docs = await collection.aggregate(queryList)
@@ -473,7 +472,7 @@ app.post('/server/mongo/metrics',
 
         // --------------------- Input Validation -------------------
 
-        const arrayBasedStringParams = {chains, systems};
+        const arrayBasedStringParams = { chains, systems };
         for (const [param, value] of Object.entries(arrayBasedStringParams)) {
             if (!Array.isArray(value) ||
                 !allElementsInListHaveTypeString(value)) {
@@ -484,7 +483,7 @@ app.post('/server/mongo/metrics',
             }
         }
 
-        const positiveFloats = {minTimestamp, maxTimestamp};
+        const positiveFloats = { minTimestamp, maxTimestamp };
         for (const [param, value] of Object.entries(positiveFloats)) {
             const parsedFloat = parseFloat(value);
             if (isNaN(parsedFloat) || parsedFloat < 0) {
@@ -510,17 +509,17 @@ app.post('/server/mongo/metrics',
         // nodes field. Also, a node ID can be present in both the systems and
         // the nodes fields.
 
-        let result = resultJson({metrics: {}});
+        let result = resultJson({ metrics: {} });
         try {
             if (mongoInterface.client) {
                 const db = mongoInterface.client.db(mongoDB);
                 if (chains.length > 0) {
                     var queryPromise = new Promise<void>((resolve, _) => {
                         systems.forEach(async (source: string,
-                                               i: number): Promise<void> => {
+                            i: number): Promise<void> => {
                             let queryList: any = [];
                             for (let i = 1; i < chains.length; i++) {
-                                queryList.push({$unionWith: chains[i]})
+                                queryList.push({ $unionWith: chains[i] })
                             }
 
                             if (!(source in result.result.metrics)) {
@@ -530,8 +529,8 @@ app.post('/server/mongo/metrics',
                             const originSource = "$".concat(source);
                             const timestampSource = source.concat(".timestamp");
                             queryList.push(
-                                {$match: {doc_type: "system"}},
-                                {$unwind: originSource},
+                                { $match: { doc_type: "system" } },
+                                { $unwind: originSource },
                                 {
                                     $match: {
                                         [timestampSource]: {
@@ -540,8 +539,8 @@ app.post('/server/mongo/metrics',
                                         }
                                     }
                                 },
-                                {$sort: {"timestamp": -1, _id: 1}},
-                                {$limit: parsedNoOfMetricsPerSource},
+                                { $sort: { "timestamp": -1, _id: 1 } },
+                                { $limit: parsedNoOfMetricsPerSource },
                             );
                             const collection = db.collection(chains[0]);
                             const docs = await collection.aggregate(queryList)
@@ -589,7 +588,7 @@ app.post('/server/redis/alertsOverview',
 
         // Check if some required keys are missing in the body object, if yes
         // notify the client.
-        const missingKeysList: string[] = missingValues({parentIds});
+        const missingKeysList: string[] = missingValues({ parentIds });
         if (missingKeysList.length !== 0) {
             const err = new MissingKeysInBody(...missingKeysList);
             res.status(err.code).send(errorJson(err.message));
@@ -843,7 +842,7 @@ app.post('/server/redis/alertsOverview',
                             // problems.
                             if (value.severity !== Severities.INFO &&
                                 !result.result[data.parentId].problems[
-                                    data.monitorableId]) {
+                                data.monitorableId]) {
                                 result.result[data.parentId].problems[
                                     data.monitorableId] = []
                             }
@@ -881,17 +880,17 @@ app.post('/server/redis/alertsOverview',
                                     case changedTagsKeys[0]:
                                         result.result[data.parentId].tags[
                                             data.monitorableId]
-                                            ['new'] = value;
+                                        ['new'] = value;
                                         break;
                                     case changedTagsKeys[1]:
                                         result.result[data.parentId].tags[
                                             data.monitorableId]
-                                            ['updated'] = value;
+                                        ['updated'] = value;
                                         break;
                                     case changedTagsKeys[2]:
                                         result.result[data.parentId].tags[
                                             data.monitorableId]
-                                            ['deleted'] = value;
+                                        ['deleted'] = value;
                                         break;
                                 }
                             }
@@ -960,7 +959,7 @@ app.post('/server/redis/metrics',
 
         // Check if some required keys are missing in the body object, if yes
         // notify the client.
-        const missingKeysList: string[] = missingValues({parentIds});
+        const missingKeysList: string[] = missingValues({ parentIds });
         if (missingKeysList.length !== 0) {
             const err = new MissingKeysInBody(...missingKeysList);
             res.status(err.code).send(errorJson(err.message));
@@ -1085,8 +1084,8 @@ app.post('/server/redis/metrics',
                                         }
                                         result.result[parentId]
                                             .system[monitorableId][key.replace(
-                                            '_' + monitorableId,
-                                            '')] = value;
+                                                '_' + monitorableId,
+                                                '')] = value;
                                     } else if (parentIds[parentId].repos
                                         .includes(monitorableId)) {
                                         if (!(monitorableId in
@@ -1097,8 +1096,8 @@ app.post('/server/redis/metrics',
                                         }
                                         result.result[parentId]
                                             .github[monitorableId][key.replace(
-                                            '_' + monitorableId,
-                                            '')] = value;
+                                                '_' + monitorableId,
+                                                '')] = value;
                                     }
 
                                     // In the future, we need to retrieve node
@@ -1161,7 +1160,7 @@ app.post('/server/common/node-exporter',
 
         const url = `${nodeExporterUrl}`;
 
-        axios.get(url, {timeout: 3000}).then((response) => {
+        axios.get(url, { timeout: 3000 }).then((response) => {
             if (verifyNodeExporterPing(response.data)) {
                 res.status(Status.SUCCESS).send(resultJson(PingStatus.SUCCESS));
             } else {
@@ -1185,7 +1184,7 @@ app.post('/server/common/prometheus',
 
         // Check if some required keys are missing in the body object, if yes
         // notify the client.
-        const missingKeysList: string[] = missingValues({url, baseChain});
+        const missingKeysList: string[] = missingValues({ url, baseChain });
         if (missingKeysList.length !== 0) {
             const err = new MissingKeysInBody(...missingKeysList);
             res.status(err.code).send(errorJson(err.message));
@@ -1197,7 +1196,7 @@ app.post('/server/common/prometheus',
             rejectUnauthorized: false
         });
 
-        axios.get(url, {timeout: 3000, httpsAgent: agent}).then((response) => {
+        axios.get(url, { timeout: 3000, httpsAgent: agent }).then((response) => {
             if (verifyPrometheusPing(response.data, baseChain)) {
                 res.status(Status.SUCCESS).send(resultJson(PingStatus.SUCCESS));
             } else {
@@ -1233,7 +1232,7 @@ app.post('/server/cosmos/rest',
 
         const url = `${cosmosRestUrl}/node_info`;
 
-        axios.get(url, {timeout: 3000}).then((response) => {
+        axios.get(url, { timeout: 3000 }).then((response) => {
             if ('node_info' in response.data) {
                 res.status(Status.SUCCESS).send(resultJson(PingStatus.SUCCESS));
             } else {
@@ -1267,7 +1266,7 @@ app.post('/server/cosmos/tendermint-rpc',
 
         const url = `${tendermintRpcUrl}/abci_info?`;
 
-        axios.get(url, {timeout: 3000}).then((response) => {
+        axios.get(url, { timeout: 3000 }).then((response) => {
             if ('jsonrpc' in response.data) {
                 res.status(Status.SUCCESS).send(resultJson(PingStatus.SUCCESS));
             } else {
@@ -1317,7 +1316,7 @@ app.post('/server/substrate/websocket',
 
         const url = `https://${substrateIp}:${substrateApi}/api/rpc/system/syncState?websocket=${substrateWsUrl}`;
 
-        axios.get(url, {timeout: 5000, httpsAgent: agent}).then((_) => {
+        axios.get(url, { timeout: 5000, httpsAgent: agent }).then((_) => {
             res.status(Status.SUCCESS).send(resultJson(PingStatus.SUCCESS));
         }).catch((err) => {
             if (err.code === 'ECONNABORTED') {
@@ -1338,7 +1337,7 @@ app.post('/server/ethereum/rpc',
 
         // Check if some required keys are missing in the body object, if yes
         // notify the client.
-        const missingKeysList: string[] = missingValues({url});
+        const missingKeysList: string[] = missingValues({ url });
         if (missingKeysList.length !== 0) {
             const err = new MissingKeysInBody(...missingKeysList);
             res.status(err.code).send(errorJson(err.message));
@@ -1372,7 +1371,7 @@ app.post('/server/channels/opsgenie',
 
         // Check if some required keys are missing in the body object, if yes
         // notify the client.
-        const missingKeysList: string[] = missingValues({apiKey, eu});
+        const missingKeysList: string[] = missingValues({ apiKey, eu });
         if (missingKeysList.length !== 0) {
             const err = new MissingKeysInBody(...missingKeysList);
             res.status(err.code).send(errorJson(err.message));
@@ -1384,7 +1383,7 @@ app.post('/server/channels/opsgenie',
         const host = toBool(String(eu)) ? 'https://api.eu.opsgenie.com' : 'https://api.opsgenie.com';
 
         // Create OpsGenie client and test alert message
-        opsgenie.configure({api_key: apiKey, host});
+        opsgenie.configure({ api_key: apiKey, host });
 
         // Test alert object
         const alertObject = {
@@ -1412,7 +1411,7 @@ app.post('/server/channels/slack',
 
         // Check if some required keys are missing in the body object, if yes
         // notify the client.
-        const missingKeysList: string[] = missingValues({botToken, botChannelId});
+        const missingKeysList: string[] = missingValues({ botToken, botChannelId });
         if (missingKeysList.length !== 0) {
             const err = new MissingKeysInBody(...missingKeysList);
             res.status(err.code).send(errorJson(err.message));
@@ -1448,7 +1447,7 @@ app.post('/server/channels/telegram',
 
         // Check if some required keys are missing in the body object, if yes
         // notify the client.
-        const missingKeysList: string[] = missingValues({botToken, botChatId});
+        const missingKeysList: string[] = missingValues({ botToken, botChatId });
         if (missingKeysList.length !== 0) {
             const err = new MissingKeysInBody(...missingKeysList);
             res.status(err.code).send(errorJson(err.message));
@@ -1462,7 +1461,7 @@ app.post('/server/channels/telegram',
             parse_mode: 'Markdown'
         }
 
-        axios.get(url, {timeout: 3000, params}).then(() => {
+        axios.get(url, { timeout: 3000, params }).then(() => {
             res.status(Status.SUCCESS).send(resultJson(PingStatus.SUCCESS));
         }).catch((err) => {
             console.error(err);
@@ -1476,36 +1475,36 @@ app.post('/server/channels/telegram',
 
 app.post('/server/channels/pagerduty',
     async (req, res) => {
-    console.log('Received POST request for %s', req.url);
-    const integrationKey = req.body['integrationKey'];
+        console.log('Received POST request for %s', req.url);
+        const integrationKey = req.body['integrationKey'];
 
-    // Check if some required keys are missing in the body object, if yes
-    // notify the client.
-    const missingKeysList: string[] = missingValues({integrationKey});
-    if (missingKeysList.length !== 0) {
-        const err = new MissingKeysInBody(...missingKeysList);
-        res.status(err.code).send(errorJson(err.message));
-        return;
-    }
-
-    // Send test alert event
-    event({
-        data: {
-            routing_key: integrationKey,
-            event_action: 'trigger',
-            payload: {
-                summary: testAlertMessage,
-                source: 'PANIC',
-                severity: 'info',
-            },
+        // Check if some required keys are missing in the body object, if yes
+        // notify the client.
+        const missingKeysList: string[] = missingValues({ integrationKey });
+        if (missingKeysList.length !== 0) {
+            const err = new MissingKeysInBody(...missingKeysList);
+            res.status(err.code).send(errorJson(err.message));
+            return;
         }
-    }).then(() => {
-        res.status(Status.SUCCESS).send(resultJson(PingStatus.SUCCESS));
-    }).catch((err) => {
-        console.error(err);
-        res.status(Status.ERROR).send(resultJson(PingStatus.ERROR));
+
+        // Send test alert event
+        event({
+            data: {
+                routing_key: integrationKey,
+                event_action: 'trigger',
+                payload: {
+                    summary: testAlertMessage,
+                    source: 'PANIC',
+                    severity: 'info',
+                },
+            }
+        }).then(() => {
+            res.status(Status.SUCCESS).send(resultJson(PingStatus.SUCCESS));
+        }).catch((err) => {
+            console.error(err);
+            res.status(Status.ERROR).send(resultJson(PingStatus.ERROR));
+        });
     });
-});
 
 app.post('/server/channels/twilio',
     async (req: express.Request, res: express.Response) => {
@@ -1610,72 +1609,72 @@ app.post('/server/channels/email',
 // ----------------- Repositories
 
 app.post('/server/repositories/github',
-  async (req: express.Request, res: express.Response) => {
-      console.log('Received POST request for %s %s', req.url, req.body);
-      const repoName = req.body['name'];
+    async (req: express.Request, res: express.Response) => {
+        console.log('Received POST request for %s %s', req.url, req.body);
+        const repoName = req.body['name'];
 
-      // Check if some required keys are missing in the body object, if yes
-      // notify the client.
-      const missingKeysList: string[] = missingValues({
-          repoName
-      });
-      if (missingKeysList.length !== 0) {
-          const err = new MissingKeysInBody(...missingKeysList);
-          res.status(err.code).send(errorJson(err.message));
-          return;
-      }
+        // Check if some required keys are missing in the body object, if yes
+        // notify the client.
+        const missingKeysList: string[] = missingValues({
+            repoName
+        });
+        if (missingKeysList.length !== 0) {
+            const err = new MissingKeysInBody(...missingKeysList);
+            res.status(err.code).send(errorJson(err.message));
+            return;
+        }
 
-      const url = `https://api.github.com/repos/${repoName}`;
+        const url = `https://api.github.com/repos/${repoName}`;
 
-      axios.get(url, {timeout: 3000}).then((response) => {
-          if(response.status === 200){
-              res.status(Status.SUCCESS).send(resultJson(PingStatus.SUCCESS));
-          } else {
-              res.status(Status.ERROR).send(resultJson(PingStatus.ERROR));
-          }
-      }).catch((err) => {
-          if (err.code === 'ECONNABORTED') {
-              res.status(Status.TIMEOUT).send(resultJson(PingStatus.TIMEOUT));
-          } else {
-              console.error(`Axios error: ${err.message}`);
-              res.status(Status.ERROR).send(resultJson(PingStatus.ERROR));
-          }
-      });
-  });
+        axios.get(url, { timeout: 3000 }).then((response) => {
+            if (response.status === 200) {
+                res.status(Status.SUCCESS).send(resultJson(PingStatus.SUCCESS));
+            } else {
+                res.status(Status.ERROR).send(resultJson(PingStatus.ERROR));
+            }
+        }).catch((err) => {
+            if (err.code === 'ECONNABORTED') {
+                res.status(Status.TIMEOUT).send(resultJson(PingStatus.TIMEOUT));
+            } else {
+                console.error(`Axios error: ${err.message}`);
+                res.status(Status.ERROR).send(resultJson(PingStatus.ERROR));
+            }
+        });
+    });
 
 app.post('/server/repositories/dockerhub',
-  async (req: express.Request, res: express.Response) => {
-      console.log('Received POST request for %s %s', req.url, req.body);
-      const repoName = req.body['name'];
+    async (req: express.Request, res: express.Response) => {
+        console.log('Received POST request for %s %s', req.url, req.body);
+        const repoName = req.body['name'];
 
-      // Check if some required keys are missing in the body object, if yes
-      // notify the client.
-      const missingKeysList: string[] = missingValues({
-          repoName
-      });
-      if (missingKeysList.length !== 0) {
-          const err = new MissingKeysInBody(...missingKeysList);
-          res.status(err.code).send(errorJson(err.message));
-          return;
-      }
+        // Check if some required keys are missing in the body object, if yes
+        // notify the client.
+        const missingKeysList: string[] = missingValues({
+            repoName
+        });
+        if (missingKeysList.length !== 0) {
+            const err = new MissingKeysInBody(...missingKeysList);
+            res.status(err.code).send(errorJson(err.message));
+            return;
+        }
 
-      const url = `https://registry.hub.docker.com/v2/repositories/${repoName}`;
+        const url = `https://registry.hub.docker.com/v2/repositories/${repoName}`;
 
-      axios.get(url, {timeout: 3000}).then((response) => {
-          if('name' in response.data && 'user' in response.data){
-              res.status(Status.SUCCESS).send(resultJson(PingStatus.SUCCESS));
-          } else {
-              res.status(Status.ERROR).send(resultJson(PingStatus.ERROR));
-          }
-      }).catch((err) => {
-          if (err.code === 'ECONNABORTED') {
-              res.status(Status.TIMEOUT).send(resultJson(PingStatus.TIMEOUT));
-          } else {
-              console.error(`Axios error: ${err.message}`);
-              res.status(Status.ERROR).send(resultJson(PingStatus.ERROR));
-          }
-      });
-  });
+        axios.get(url, { timeout: 3000 }).then((response) => {
+            if ('name' in response.data && 'user' in response.data) {
+                res.status(Status.SUCCESS).send(resultJson(PingStatus.SUCCESS));
+            } else {
+                res.status(Status.ERROR).send(resultJson(PingStatus.ERROR));
+            }
+        }).catch((err) => {
+            if (err.code === 'ECONNABORTED') {
+                res.status(Status.TIMEOUT).send(resultJson(PingStatus.TIMEOUT));
+            } else {
+                console.error(`Axios error: ${err.message}`);
+                res.status(Status.ERROR).send(resultJson(PingStatus.ERROR));
+            }
+        });
+    });
 
 
 
@@ -1683,14 +1682,14 @@ app.post('/server/repositories/dockerhub',
 // ---------------------------------------- Server defaults
 
 app.get('/server/*', async (req: express.Request,
-                            res: express.Response) => {
+    res: express.Response) => {
     console.log('Received GET request for %s', req.url);
     const err: InvalidEndpoint = new InvalidEndpoint(req.url);
     res.status(err.code).send(errorJson(err.message));
 });
 
 app.post('/server/*', async (req: express.Request,
-                             res: express.Response) => {
+    res: express.Response) => {
     console.log('Received POST request for %s', req.url);
     const err = new InvalidEndpoint(req.url);
     res.status(err.code).send(errorJson(err.message));
@@ -1703,7 +1702,7 @@ app.get('/*', async (req: express.Request, res: express.Response) => {
 });
 
 app.post('/*', async (req: express.Request,
-                      res: express.Response) => {
+    res: express.Response) => {
     res.redirect('/api-docs')
 });
 
@@ -1724,4 +1723,4 @@ server.listen(port, () => console.log('Listening on %s', port));
 
 //TODO: Need to add authentication, even to the respective middleware functions
 
-export {app, server, redisInterval, mongoInterval};
+export { app, server, redisInterval, mongoInterval };

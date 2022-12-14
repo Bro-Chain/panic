@@ -33,8 +33,7 @@ export class MongoConnect {
 
     private static getConnection(): Promise<mongosee.Connection> {
 
-        const host = process.env.DB_IP || "rs1";
-        const port = parseInt(process.env.DB_PORT || "27017");
+        const mongoConnectionString = process.env.DB_CONNECTION_STRING || "mongodb://rs1:27017";
         const db = process.env.DB_NAME || "panicdb";
         const connection = mongosee.connection;
 
@@ -43,7 +42,7 @@ export class MongoConnect {
             replicaSet: 'replica-set',
             readPreference: 'primaryPreferred'
         }
-        mongosee.connect(`mongodb://${host}:${port}`, opt);
+        mongosee.connect(mongoConnectionString, opt);
 
         mongosee.pluralize(null);
 
