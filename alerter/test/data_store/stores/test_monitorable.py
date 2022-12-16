@@ -14,7 +14,7 @@ from src.data_store.mongo import MongoApi
 from src.data_store.stores.monitorable import MonitorableStore
 from src.message_broker.rabbitmq import RabbitMQApi
 from src.utils import env
-from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME
+from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME, DB_USERNAME, DB_PASSWORD
 from src.utils.constants.monitorables import (
     MonitorableType, MONITORABLES_MONGO_COLLECTION)
 from src.utils.constants.rabbitmq import (
@@ -45,6 +45,7 @@ class TestMonitorableStore(unittest.TestCase):
         self.mongo_port = env.DB_PORT
         self.mongo = MongoApi(logger=self.dummy_logger.getChild(
             MongoApi.__name__), db_name=self.mongo_db, host=REPLICA_SET_HOSTS,
+            username=DB_USERNAME, password=DB_PASSWORD,
             replicaSet=REPLICA_SET_NAME)
 
         self.redis = None

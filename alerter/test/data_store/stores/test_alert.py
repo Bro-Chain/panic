@@ -28,7 +28,7 @@ from src.data_store.stores.alert import AlertStore
 from src.message_broker.rabbitmq import RabbitMQApi
 from src.utils import env
 from src.utils.constants.data import EXPIRE_METRICS
-from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME
+from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME, DB_USERNAME, DB_PASSWORD
 from src.utils.constants.rabbitmq import (STORE_EXCHANGE, HEALTH_CHECK_EXCHANGE,
                                           ALERT_STORE_INPUT_QUEUE_NAME,
                                           HEARTBEAT_OUTPUT_WORKER_ROUTING_KEY,
@@ -59,6 +59,7 @@ class TestAlertStore(unittest.TestCase):
 
         self.mongo = MongoApi(logger=self.dummy_logger.getChild(
             MongoApi.__name__), db_name=self.mongo_db, host=REPLICA_SET_HOSTS,
+            username=DB_USERNAME, password=DB_PASSWORD,
             replicaSet=REPLICA_SET_NAME)
 
         self.redis_db = env.REDIS_DB

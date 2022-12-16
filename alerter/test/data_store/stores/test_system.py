@@ -18,7 +18,7 @@ from src.data_store.redis.store_keys import Keys
 from src.data_store.stores.system import SystemStore
 from src.message_broker.rabbitmq import RabbitMQApi
 from src.utils import env
-from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME
+from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME, DB_USERNAME, DB_PASSWORD
 from src.utils.constants.rabbitmq import (
     STORE_EXCHANGE, HEALTH_CHECK_EXCHANGE, SYSTEM_STORE_INPUT_QUEUE_NAME, TOPIC,
     HEARTBEAT_OUTPUT_WORKER_ROUTING_KEY, SYSTEM_TRANSFORMED_DATA_ROUTING_KEY)
@@ -58,6 +58,7 @@ class TestSystemStore(unittest.TestCase):
         self.mongo = MongoApi(logger=self.dummy_logger.getChild(
             MongoApi.__name__),
             db_name=self.mongo_db, host=REPLICA_SET_HOSTS,
+            username=DB_USERNAME, password=DB_PASSWORD,
             replicaSet=REPLICA_SET_NAME)
 
         self.test_store_name = 'store name'

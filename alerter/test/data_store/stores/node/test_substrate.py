@@ -14,7 +14,7 @@ from src.data_store.redis import RedisApi, Keys
 from src.data_store.stores.node.substrate import SubstrateNodeStore
 from src.message_broker.rabbitmq import RabbitMQApi
 from src.utils import env
-from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME
+from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME, DB_USERNAME, DB_PASSWORD
 from src.utils.constants.rabbitmq import (
     HEARTBEAT_OUTPUT_WORKER_ROUTING_KEY,
     SUBSTRATE_NODE_TRANSFORMED_DATA_ROUTING_KEY, STORE_EXCHANGE,
@@ -56,6 +56,7 @@ class TestSubstrateNodeStore(unittest.TestCase):
         self.mongo = MongoApi(logger=self.dummy_logger.getChild(
             MongoApi.__name__),
             db_name=self.mongo_db, host=REPLICA_SET_HOSTS,
+            username=DB_USERNAME, password=DB_PASSWORD,
             replicaSet=REPLICA_SET_NAME)
 
         # Test store object

@@ -22,7 +22,7 @@ from src.data_store.mongo.mongo_api import MongoApi
 from src.message_broker.rabbitmq import RabbitMQApi
 from src.utils import env
 from src.utils.constants.mongo import (
-    CONFIGS_COLL, REPLICA_SET_HOSTS, REPLICA_SET_NAME)
+    CONFIGS_COLL, REPLICA_SET_HOSTS, REPLICA_SET_NAME, DB_USERNAME, DB_PASSWORD)
 from src.utils.constants.rabbitmq import (
     CONFIG_EXCHANGE, HEALTH_CHECK_EXCHANGE, CONFIGS_MANAGER_HEARTBEAT_QUEUE,
     PING_ROUTING_KEY, HEARTBEAT_OUTPUT_WORKER_ROUTING_KEY, TOPIC)
@@ -71,6 +71,7 @@ class ConfigsManager(QueuingPublisherSubscriberComponent):
         self._mongo = MongoApi(
             logger.getChild(MongoApi.__name__),
             host=REPLICA_SET_HOSTS, db_name=env.DB_NAME,
+            username=DB_USERNAME, password=DB_PASSWORD,
             replicaSet=REPLICA_SET_NAME
         )
 

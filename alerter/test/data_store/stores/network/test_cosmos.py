@@ -16,7 +16,7 @@ from src.message_broker.rabbitmq import RabbitMQApi
 from src.utils import env
 from src.utils.constants.cosmos import (PROPOSAL_STATUS_PASSED,
                                         PROPOSAL_STATUS_REJECTED)
-from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME
+from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME, DB_USERNAME, DB_PASSWORD
 from src.utils.constants.rabbitmq import (
     HEARTBEAT_OUTPUT_WORKER_ROUTING_KEY,
     COSMOS_NETWORK_TRANSFORMED_DATA_ROUTING_KEY, HEALTH_CHECK_EXCHANGE,
@@ -57,6 +57,7 @@ class TestCosmosNetworkStore(unittest.TestCase):
         self.mongo = MongoApi(logger=self.dummy_logger.getChild(
             MongoApi.__name__),
             db_name=self.mongo_db, host=REPLICA_SET_HOSTS,
+            username=DB_USERNAME, password=DB_PASSWORD,
             replicaSet=REPLICA_SET_NAME)
 
         # Test store object

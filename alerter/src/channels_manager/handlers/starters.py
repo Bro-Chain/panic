@@ -39,7 +39,7 @@ from src.data_store.mongo import MongoApi
 from src.data_store.redis import RedisApi
 from src.message_broker.rabbitmq import RabbitMQApi
 from src.utils import env
-from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME
+from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME, DB_USERNAME, DB_PASSWORD
 from src.utils.constants.names import (TELEGRAM_ALERTS_HANDLER_NAME_TEMPLATE,
                                        TELEGRAM_COMMANDS_HANDLER_NAME_TEMPLATE,
                                        TELEGRAM_COMMAND_HANDLERS_NAME,
@@ -176,6 +176,7 @@ def _initialise_telegram_commands_handler(
             cmd_handlers_mongo = MongoApi(
                 logger=cmd_handlers_logger.getChild(MongoApi.__name__),
                 host=REPLICA_SET_HOSTS, db_name=env.DB_NAME,
+                username=DB_USERNAME, password=DB_PASSWORD,
                 replicaSet=REPLICA_SET_NAME)
 
             cmd_handlers = TelegramCommandHandlers(
@@ -285,6 +286,7 @@ def _initialise_slack_commands_handler(
             cmd_handlers_mongo = MongoApi(
                 logger=cmd_handlers_logger.getChild(MongoApi.__name__),
                 host=REPLICA_SET_HOSTS, db_name=env.DB_NAME,
+                username=DB_USERNAME, password=DB_PASSWORD,
                 replicaSet=REPLICA_SET_NAME)
 
             cmd_handlers = SlackCommandHandlers(

@@ -15,7 +15,10 @@ initialising the class
 UNIQUE_ALERTER_IDENTIFIER = os.environ['UNIQUE_ALERTER_IDENTIFIER']
 
 # Mongo configuration
-DB_CONNECTION_STRING = os.environ['DB_CONNECTION_STRING']
+DB_IP = os.environ['DB_IP']
+DB_PORT = os.environ['DB_PORT']
+DB_USERNAME = os.environ['DB_USERNAME']
+DB_PASSWORD = os.environ['DB_PASSWORD']
 
 # Redis configuration
 REDIS_IP = os.environ['REDIS_IP']

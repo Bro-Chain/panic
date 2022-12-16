@@ -8,7 +8,7 @@ from pymongo.errors import (PyMongoError, OperationFailure,
 
 from src.data_store.mongo.mongo_api import MongoApi
 from src.utils import env
-from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME
+from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME, DB_USERNAME, DB_PASSWORD
 
 
 class TestMongoApiWithMongoOnline(unittest.TestCase):
@@ -300,6 +300,7 @@ class TestMongoApiWithMongoOffline(unittest.TestCase):
         self.password = ''
         self.mongo = MongoApi(logger=self.dummy_logger, db_name=self.db, 
                               host=REPLICA_SET_HOSTS, 
+                              username=DB_USERNAME, password=DB_PASSWORD,
                               replicaSet=REPLICA_SET_NAME, 
                               timeout_ms=1)
         # timeout_ms is set to 1ms to speed up tests. It cannot be 0
@@ -410,6 +411,7 @@ class TestMongoApiLiveAndDownFeaturesWithMongoOffline(unittest.TestCase):
         self.live_check_time_interval_with_error_margin = timedelta(seconds=3.5)
         self.mongo = MongoApi(logger=self.dummy_logger, db_name=self.db, 
                               host=REPLICA_SET_HOSTS, 
+                              username=DB_USERNAME, password=DB_PASSWORD,
                               replicaSet=REPLICA_SET_NAME,
                               live_check_time_interval=
                               self.live_check_time_interval)

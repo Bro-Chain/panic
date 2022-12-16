@@ -8,3 +8,5 @@ GENERICS_COLL = 'generics'
 
 REPLICA_SET_HOSTS = ["{}:{}".format(env.DB_IP, env.DB_PORT)]
 REPLICA_SET_NAME = 'replica-set'
+DB_USERNAME = env.DB_USERNAME
+DB_PASSWORD = env.DB_PASSWORD

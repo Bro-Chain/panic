@@ -22,7 +22,7 @@ from src.data_store.mongo import MongoApi
 from src.data_store.redis import RedisApi
 from src.message_broker.rabbitmq import RabbitMQApi
 from src.utils import env
-from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME
+from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME, DB_USERNAME, DB_PASSWORD
 from src.utils.constants.rabbitmq import (HEALTH_CHECK_EXCHANGE,
                                           PING_ROUTING_KEY,
                                           CHAN_CMDS_HAN_HB_QUEUE_NAME_TEMPLATE,
@@ -66,6 +66,7 @@ class TestTelegramCommandsHandler(unittest.TestCase):
         self.mongo = MongoApi(
             logger=self.dummy_logger.getChild(MongoApi.__name__),
             host=REPLICA_SET_HOSTS, db_name=env.DB_NAME,
+            username=DB_USERNAME, password=DB_PASSWORD,
             replicaSet=REPLICA_SET_NAME)
         self.test_command_handlers_logger = self.dummy_logger.getChild(
             'command_handlers')

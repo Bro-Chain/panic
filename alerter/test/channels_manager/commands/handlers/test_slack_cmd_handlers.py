@@ -21,7 +21,7 @@ from src.data_store.mongo import MongoApi
 from src.data_store.redis import RedisApi, Keys
 from src.message_broker.rabbitmq import RabbitMQApi
 from src.utils import env
-from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME
+from src.utils.constants.mongo import REPLICA_SET_HOSTS, REPLICA_SET_NAME, DB_USERNAME, DB_PASSWORD
 from src.utils.constants.names import (
     SYSTEM_MONITORS_MANAGER_NAME, GITHUB_MONITORS_MANAGER_NAME,
     DOCKERHUB_MONITORS_MANAGER_NAME, DOCKERHUB_ALERTER_MANAGER_NAME,
@@ -74,6 +74,7 @@ class TestSlackCommandHandlers(unittest.TestCase):
         self.test_mongo = MongoApi(
             logger=self.dummy_logger.getChild(MongoApi.__name__),
             host=REPLICA_SET_HOSTS, db_name=env.DB_NAME,
+            username=DB_USERNAME, password=DB_PASSWORD,
             replicaSet=REPLICA_SET_NAME)
 
         self.test_slack_command_handlers = SlackCommandHandlers(
